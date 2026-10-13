@@ -1,5 +1,5 @@
 /* Ember service worker: offline shell + runtime caching (fonts included). */
-const CACHE = 'ember-shell-v1';
+const CACHE = 'ember-shell-v2';
 const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com', 'api.fontshare.com', 'cdn.fontshare.com'];
 
 self.addEventListener('install', (event) => {
