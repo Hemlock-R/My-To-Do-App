@@ -28,18 +28,31 @@ self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
+//  NEW FIXED CODE (Replace with this)
+if (FONT_HOSTS.includes(url.hostname)) {
+  event.respondWith(
+    caches.open(CACHE).then(async (cache) => {
+      // 1. Check the backpack (cache) first
+      const hit = await cache.match(req);
+      
+      // 2. Start fetching from the internet in the background
+      const fresh = fetch(req)
+        .then((res) => { 
+          // Only save it to the cache if the download was successful
+          if (res.status === 200) {
+            cache.put(req, res.clone()); 
+          }
+          return res; 
+        })
+        .catch(() => hit); // If internet fails entirely, use what we have
 
-  // Fonts: stale-while-revalidate so typography survives offline after the first visit.
-  if (FONT_HOSTS.includes(url.hostname)) {
-    event.respondWith(
-      caches.open(CACHE).then(async (cache) => {
-        const hit = await cache.match(req);
-        const fresh = fetch(req).then((res) => { cache.put(req, res.clone()); return res; }).catch(() => hit);
-        return hit || fresh;
-      })
-    );
-    return;
-  }
+      // 3. FIX: We use 'await' so the browser actually waits for the internet file if the cache is empty!
+      return hit || await fresh;
+    })
+  );
+  return;
+    }
+  
 
   if (url.origin !== self.location.origin) return;
 
