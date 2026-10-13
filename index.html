@@ -846,47 +846,18 @@ function normalizeState(obj) {
   s.meta.savedAt = obj.meta && typeof obj.meta.savedAt === 'number' ? obj.meta.savedAt : 0;
   return s;
 }
-
-/* First-run sample data, dated relative to today so every view has something in it */
 function makeSeed() {
-  const now = new Date(), r = ranges(now), t0 = startOfDay(now);
-  const day = n => ymd(addDays(t0, n));
-  const cap = (n, limit) => { const s = day(n); return s > limit ? limit : s; };
   const s = emptyState();
   s.categories = [
-    { name: 'Work', color: TAG_COLORS[0] }, { name: 'Home', color: TAG_COLORS[2] }, { name: 'Personal', color: TAG_COLORS[6] },
-    { name: 'Errands', color: TAG_COLORS[3] }, { name: 'Health', color: TAG_COLORS[5] },
+    { name: 'Work', color: TAG_COLORS[0] },
+    { name: 'Home', color: TAG_COLORS[2] },
+    { name: 'Personal', color: TAG_COLORS[6] },
+    { name: 'Errands', color: TAG_COLORS[3] },
+    { name: 'Health', color: TAG_COLORS[5] },
   ];
-  const defs = [
-    { title: 'Reply to the printer about proof colours', description: 'The teal is reading too grey on the sample sheet. Ask for a second proof before Friday.', dueDate: day(0), dueTime: '18:00', priority: 'high', tag: 'Work', subtasks: [['Compare the swatch book against the proof', 1], ['Photograph the sheet in daylight', 0], ['Send the revised file', 0]] },
-    { title: 'Pick up the linen shirts from the tailor', dueDate: day(0), dueTime: '19:30', priority: 'medium', tag: 'Errands' },
-    { title: 'Draft the autumn newsletter', description: 'Three sections: new arrivals, a note from the studio, and the reading list. Keep it under 400 words.', dueDate: cap(2, r.weekEnd), dueTime: '10:00', priority: 'high', tag: 'Work' },
-    { title: 'Book a dentist appointment', description: 'Ask about an evening slot, the last cleaning was over a year ago.', dueDate: day(-1), priority: 'urgent', tag: 'Health' },
-    { title: 'Submit the October expense report', dueDate: day(-3), priority: 'high', tag: 'Work', subtasks: [['Gather receipts', 1], ['Fill in the form', 0], ['Send it to finance', 0]] },
-    { title: 'Water the fig tree and turn the pot', priority: 'low', tag: 'Home' },
-    { title: 'Read two chapters before bed', priority: 'low', tag: 'Personal' },
-    { title: 'Sketch ideas for the window display', description: 'Warm lighting, one hero product, nothing stacked.', priority: 'medium', tag: 'Work' },
-    { title: 'Plan the weekend trip to the coast', dueDate: cap(4, r.weekEnd), priority: 'medium', tag: 'Personal', subtasks: [['Check train times', 0], ['Reserve a room for two nights', 1], ['Pack the camera bag', 0]] },
-    { title: 'Call Mum', dueDate: r.weekEnd, dueTime: '16:00', priority: 'medium', tag: 'Personal' },
-    { title: 'Review the lease renewal terms', description: 'Look closely at the notice period and the repair clause.', dueDate: cap(12, r.monthEnd), priority: 'high', tag: 'Home' },
-    { title: 'Back up the photo archive to the external drive', dueDate: cap(20, r.monthEnd), priority: 'low', tag: 'Home' },
-    { title: 'Renew the domain and hosting plan', dueDate: cap(60, r.yearEnd), priority: 'medium', tag: 'Work' },
-    { title: 'Book flights for the winter break', dueDate: cap(75, r.yearEnd), priority: 'medium', tag: 'Personal' },
-    { title: 'Order new business cards', priority: 'low', tag: 'Work', completed: true, completedAt: Date.now() - 86400000 },
-    { title: 'Finalise the moodboard', priority: 'medium', tag: 'Work', completed: true, completedAt: Date.now() - 3600000, subtasks: [['Collect references', 1], ['Pick the palette', 1], ['Share with the team', 1]] },
-    { title: 'Send the signed contract back', priority: 'high', tag: 'Work', completed: true, completedAt: Date.now() - 2 * 86400000, dueDate: day(-2) },
-  ];
-  defs.forEach((d, i) => {
-    const { task } = normalizeTask({
-      ...d,
-      subtasks: (d.subtasks || []).map(([text, done]) => ({ text, done: !!done })),
-      createdAt: Date.now() - i * 60000,
-    });
-    s.tasks.push(task);
-  });
   s.settings.view = 'today';
   return s;
-}
+                                                             }
 
 /* ==========================================================================
    4. Persistence: localStorage for instant reads, IndexedDB as the durable mirror
